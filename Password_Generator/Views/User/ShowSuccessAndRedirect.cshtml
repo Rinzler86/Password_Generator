@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Registration Successful";
+}
+
+<div class="alert alert-success" role="alert">
+    @TempData["SuccessMessage"]
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            window.location.href = '@Url.Action("Login", "User")';
+        }, 3000);
+    </script>
+}
