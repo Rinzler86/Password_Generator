@@ -8,6 +8,9 @@
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
 
+<!-- Add FontAwesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 <div class="container mt-4">
     <h2 class="mb-4">Welcome, @CapitalizeWords(Model.User?.FirstName ?? "User") @CapitalizeWords(Model.User?.LastName ?? "")!</h2>
 
@@ -84,46 +87,50 @@
       </div>
       
       <!-- Passwords Tab -->
-      <div class="tab-pane fade" id="passwords" role="tabpanel" aria-labelledby="passwords-tab">
-          <div class="card mt-3">
-              <div class="card-header">Your Passwords</div>
-              <div class="card-body">
-                  @if(Model.VendorPasswords != null && Model.VendorPasswords.Any())
-                  {
-                      <table class="table">
-                          <thead>
-                              <tr>
-                                  <th>Vendor Name</th>
-                                  <th>Password</th>
-                                  <th>Date Created</th>
-                                  <th>Actions</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              @foreach(var vp in Model.VendorPasswords)
-                              {
-                                  <tr>
-                                      <td>@vp.VendorName</td>
-                                      <td>@vp.CurrentPassword</td>
-                                      <td>@vp.DateCreated.ToString("g")</td>
-                                      <td>
+    <div class="tab-pane fade" id="passwords" role="tabpanel" aria-labelledby="passwords-tab">
+        <div class="card mt-3">
+            <div class="card-header">Your Passwords</div>
+            <div class="card-body">
+                @if(Model.VendorPasswords != null && Model.VendorPasswords.Any())
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Vendor Name</th>
+                                <th>Password</th>
+                                <th>Date Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var vp in Model.VendorPasswords)
+                            {
+                                <tr>
+                                    <td>@vp.VendorName</td>
+                                    <td>
+                                        <input type="password" class="form-control d-inline-block" value="@vp.CurrentPassword" readonly style="width: auto;" />
+                                        <i class="fa fa-eye ml-2" style="cursor: pointer;" onclick="togglePasswordVisibility(this)"></i>
+                                        <i class="fa fa-copy ml-2" style="cursor: pointer;" onclick="copyToClipboard('@vp.CurrentPassword')"></i>
+                                    </td>
+                                    <td>@vp.DateCreated.ToString("g")</td>
+                                    <td>
                                         <!-- History button: calls AJAX to get full history -->
                                         <button class="btn btn-info btn-sm" onclick="openModal('@vp.VendorName')">History</button>
                                         <!-- Delete button: calls AJAX to delete the password entry -->
                                         <button class="btn btn-danger btn-sm" onclick="confirmDelete(@vp.Id)">Delete</button>
                                     </td>
-                                  </tr>
-                              }
-                          </tbody>
-                      </table>
-                  }
-                  else
-                  {
-                      <p>No passwords found.</p>
-                  }
-              </div>
-          </div>
-      </div>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No passwords found.</p>
+                }
+            </div>
+        </div>
+    </div>
     </div>
 </div>
 
@@ -391,4 +398,26 @@
         // Initial update of length
         updateLength();
     });
+</script>
+
+
+<script>
+    function togglePasswordVisibility(icon) {
+        const passwordInput = icon.previousElementSibling;
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.className = 'fa fa-eye-slash ml-2';
+        } else {
+            passwordInput.type = 'password';
+            icon.className = 'fa fa-eye ml-2';
+        }
+    }
+
+    function copyToClipboard(password) {
+        navigator.clipboard.writeText(password).then(function() {
+            alert('Password copied to clipboard');
+        }, function(err) {
+            console.error('Could not copy text: ', err);
+        });
+    }
 </script>
