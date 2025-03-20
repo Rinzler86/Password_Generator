@@ -3,10 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Password Generator</title>
+    <title>@ViewData["Title"] - VaultGuard</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Password_Generator.styles.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
@@ -19,16 +22,31 @@
         }
 
         footer {
-            padding: 1rem 0;
+            padding: 0.5rem 0;
             margin-top: auto;
+            line-height: 1.2;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            width: 40px;
+            object-fit: fit;
+            transform: scale(1.7); /* Zoom in */
+            transform-origin: center; /* Center the zoomed image */
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%280, 0, 0, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
         }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3 custom-navbar" style="background-color: #E49273; border-bottom: 4px groove;">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Password Generator</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/vaultguard.png" alt="VaultGuard" />
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -38,7 +56,7 @@
                         @if (User?.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Passwords</a>
+                                <a class="nav-link text-dark" style="font-family: 'Orbitron', sans-serif;" asp-area="" asp-controller="User" asp-action="Index">Passwords</a>
                             </li>
                         }
                     </ul>
@@ -47,14 +65,14 @@
                         {
                             <li class="nav-item">
                                 <form asp-area="" asp-controller="User" asp-action="Logout" method="post" class="form-inline">
-                                    <button type="submit" class="btn btn-link nav-link text-dark" style="text-decoration: none;">Logout</button>
+                                    <button type="submit" class="btn btn-link nav-link text-dark" style="text-decoration: none; font-family: 'Orbitron' , sans-serif;">Logout</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                                <a class="nav-link text-dark" style="font-family: 'Orbitron', sans-serif;" asp-area="" asp-controller="User" asp-action="Login">Login</a>
                             </li>
                         }
                     </ul>
@@ -68,9 +86,10 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted text-center">
-        <div class="container">
-            &copy; 2025 - Password Generator - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted text-center" style="background-color: #E49273;">
+        <div class="container" style="font-family: 'Orbitron', sans-serif; color: black;">
+            &copy; 2025 - VaultGuard - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div>Zeb Duffey &middot; Jake Goins &middot; Abby Hernandez</div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -106,6 +125,12 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
+
+
+
+
 
 
 

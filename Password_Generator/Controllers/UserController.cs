@@ -45,10 +45,10 @@ namespace Password_Generator.Controllers
                     CurrentPassword = vp.CurrentPassword,
                     DateCreated = vp.PasswordHistories.Any()
                         ? vp.PasswordHistories.OrderByDescending(ph => ph.CreatedAt).FirstOrDefault().CreatedAt
-                        : vp.CreatedAt
+                        : vp.CreatedAt,
+                    Category = vp.Category // Include the category in the DTO
                 })
                 .ToList();
-
 
             var viewModel = new UserDashboardViewModel
             {

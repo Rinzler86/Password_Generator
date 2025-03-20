@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Password_Generator.Data;
+using Password_Generator.Helpers;
 using Password_Generator.Models;
 using System.Security.Claims;
 
@@ -137,24 +138,35 @@ namespace Password_Generator.Controllers
             var estZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
             var historyDTOs = history.Select(ph => new PasswordHistoryDTO
             {
-                OldPassword = ph.OldPassword,
+                OldPassword = Password_Generator.Helpers.EncryptionHelper.Decrypt(ph.OldPassword),
                 CreatedAt = TimeZoneInfo.ConvertTimeFromUtc(ph.CreatedAt, estZone)
             }).ToList();
 
-            return Json(new { success = true, history = historyDTOs });
+            // Include the category in the response
+            var response = new
+            {
+                success = true,
+                category = vendor.Category,
+                history = historyDTOs
+            };
+
+            return Json(response);
         }
 
         [HttpPost("AddPassword")]
         public IActionResult AddPassword([FromBody] VendorPassword model)
         {
-            // Retrieve the logged-in user's email from the claims
+            if (model == null)
+            {
+                return Json(new { success = false, message = "Invalid request body." });
+            }
+
             var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
             if (string.IsNullOrEmpty(userEmail))
             {
                 return Json(new { success = false, message = "User not authenticated." });
             }
 
-            // Find the corresponding user record
             var user = _context.Password_Generator_Users.FirstOrDefault(u => u.Email == userEmail);
             if (user == null)
             {
@@ -162,43 +174,56 @@ namespace Password_Generator.Controllers
             }
 
             model.UserId = user.Id;
-
-            // Capitalize each word in VendorName
             model.VendorName = CapitalizeWords(model.VendorName);
 
-            // Check if a vendor password for the same vendor already exists for this user
             var existingVendor = _context.VendorPasswords
                 .FirstOrDefault(vp => vp.UserId == user.Id && vp.VendorName == model.VendorName);
 
             if (existingVendor != null)
             {
-                // Record the current password to history before updating
+                // Record the current encrypted password to history before updating
                 var history = new PasswordHistory
                 {
                     OldPassword = existingVendor.CurrentPassword,
-                    VendorPasswordId = existingVendor.Id
+                    VendorPasswordId = existingVendor.Id,
+                    CreatedAt = DateTime.UtcNow
                 };
                 _context.PasswordHistories.Add(history);
 
-                // Update the existing vendor record with the new password (and URL if needed)
-                existingVendor.CurrentPassword = model.CurrentPassword ?? existingVendor.CurrentPassword;
+                // Update with the new encrypted password if provided
+                if (!string.IsNullOrEmpty(model.CurrentPassword))
+                    existingVendor.CurrentPassword = EncryptionHelper.Encrypt(model.CurrentPassword);
                 existingVendor.Url = model.Url;
+                existingVendor.Category = model.Category;
                 _context.VendorPasswords.Update(existingVendor);
             }
             else
             {
-                // Ensure CurrentPassword is not null
                 if (string.IsNullOrEmpty(model.CurrentPassword))
                 {
                     return Json(new { success = false, message = "CurrentPassword cannot be null." });
                 }
-
-                // Add a new vendor password entry if none exists
+                model.CreatedAt = DateTime.UtcNow;
+                // Encrypt before saving the new record
+                model.CurrentPassword = EncryptionHelper.Encrypt(model.CurrentPassword);
                 _context.VendorPasswords.Add(model);
             }
 
             _context.SaveChanges();
-            return Json(new { success = true, message = "Password entry added." });
+
+            // Return the updated list of passwords
+            var updatedPasswords = _context.VendorPasswords
+                .Where(vp => vp.UserId == user.Id)
+                .Select(vp => new
+                {
+                    vp.Id,
+                    vp.VendorName,
+                    CurrentPassword = EncryptionHelper.Decrypt(vp.CurrentPassword),
+                    vp.Category
+                })
+                .ToList();
+
+            return Json(new { success = true, message = "Password entry added.", passwords = updatedPasswords });
         }
 
         private string CapitalizeWords(string input)
