@@ -1,7 +1,27 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Password_Generator.Models
 {
+    public enum PasswordCategory
+    {
+        Social_Media,
+        Email,
+        Banking,
+        Shopping,
+        Entertainment,
+        Work,
+        Education,
+        Health,
+        Travel,
+        Utilities,
+        Gaming,
+        Finance,
+        Government,
+        Communication,
+        Other
+    }
+
     public class VendorPassword
     {
         public int Id { get; set; }
@@ -24,5 +44,11 @@ namespace Password_Generator.Models
 
         // New property for when the vendor record was created
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // New property for password category
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [Required]
+        public PasswordCategory Category { get; set; }
     }
 }
+

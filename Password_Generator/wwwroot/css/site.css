@@ -1,22 +1,90 @@
+:root {
+    --mid-blue: #7180AC;
+    --dark-blue: #2B4570;
+    --light-blue: #A8D0DB;
+    --orange: #E49273;
+    --dark-tan: #A37A74;
+}
+
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    font-family: 'Orbitron', sans-serif;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
+body, div, h2 {
+    margin-bottom: 10px;
+    font-family: 'Orbitron', sans-serif;
 }
+
+@media (max-width: 767.98px) {
+    .password-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .password-container .mobile-actions {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+            .password-container .mobile-actions .vendor-category {
+                margin-bottom: 5px;
+                flex: 1 1 100%;
+            }
+
+    .vendor-category, .actions {
+        display: none;
+    }
+
+    .password-container .mobile-actions .btn {
+        margin-bottom: 5px;
+        flex: 1 1 auto;
+    }
+
+    /* Hide the category and action headers */
+    th:nth-child(3), th:nth-child(4) {
+        display: none;
+    }
+}
+@media (max-width: 767.98px) {
+    #length-label, #numDigits-label {
+        padding-bottom: 21px;
+    }
+}
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.vaultguard-logo {
+    animation: pulse 20s infinite;
+    animation-delay: 20s;
+}
+
