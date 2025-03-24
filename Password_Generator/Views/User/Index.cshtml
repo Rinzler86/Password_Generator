@@ -315,7 +315,12 @@
                 if (data.success) {
                     showFlashMessage("Password added successfully!", "success");
                     event.target.reset();
-                    // Optionally, update the password tab (via fetch or reload part of the page)
+                    // Store the tab state in local storage
+                    localStorage.setItem('activeTab', 'passwords-tab');
+                    // Refresh the page after 1.5 seconds
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
                 } else {
                     showFlashMessage("Error: " + data.message, "danger");
                 }
@@ -325,7 +330,6 @@
                 showFlashMessage("An error occurred while adding the password.", "danger");
             });
     });
-
 
     // Function to show flash message using a Bootstrap alert style
     function showFlashMessage(message, type) {
@@ -339,12 +343,36 @@
         alertDiv.style.right = "20px";
         alertDiv.style.zIndex = "1000";
         document.body.appendChild(alertDiv);
-        // Remove alert after 3 seconds
+        // Remove alert after 1 seconds
         setTimeout(() => {
             alertDiv.remove();
-        }, 3000);
+        }, 1000);
     }
 
+    // Function to switch to the "Passwords" tab
+    function switchToPasswordsTab() {
+        const passwordsTab = document.getElementById('passwords-tab');
+        const newTab = document.getElementById('new-tab');
+        const passwordsContent = document.getElementById('passwords');
+        const newContent = document.getElementById('new');
+
+        // Remove active class from the "New" tab and content
+        newTab.classList.remove('active');
+        newContent.classList.remove('show', 'active');
+
+        // Add active class to the "Passwords" tab and content
+        passwordsTab.classList.add('active');
+        passwordsContent.classList.add('show', 'active');
+    }
+
+    // Check local storage for the active tab state and switch to it
+    document.addEventListener('DOMContentLoaded', function () {
+        const activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            document.getElementById(activeTab).click();
+            localStorage.removeItem('activeTab');
+        }
+    });
 </script>
 
 <script>
