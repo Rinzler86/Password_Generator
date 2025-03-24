@@ -47,6 +47,10 @@
                             <input type="text" class="form-control" id="vendorName" name="VendorName" required />
                         </div>
                         <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="Username" />
+                        </div>
+                        <div class="form-group">
                             <label for="url">URL</label>
                             <input type="url" class="form-control" id="url" name="Url" required />
                         </div>
@@ -119,8 +123,9 @@
                         <table class="table" id="passwordsTable">
                             <thead>
                                 <tr>
+                                    <th class="vendor-logo-header">Logo</th>
                                     <th>Vendor Name</th>
-                                    <th>Password</th>
+                                    <th>Username/Password</th>
                                     <th>Category</th>
                                     <th>Actions</th>
                                 </tr>
@@ -129,17 +134,30 @@
                                 @foreach (var vp in Model.VendorPasswords)
                                 {
                                     <tr>
-                                        <td class="vendor-name">@vp.VendorName</td>
-                                        <td>
-                                            <input type="password" class="form-control d-inline-block" value="@EncryptionHelper.Decrypt(vp.CurrentPassword)" readonly style="width: auto;" />
-                                            <i class="fa fa-eye ml-2" style="cursor: pointer;" onclick="togglePasswordVisibility(this)"></i>
-                                            <i class="fa fa-copy ml-2" style="cursor: pointer;" onclick="copyToClipboard('@EncryptionHelper.Decrypt(vp.CurrentPassword)')"></i>
+                                        <td class="vendor-logo">
+                                            <img src="~/images/vaultguard.png" alt="Logo" class="vendor-logo-img" data-vendor="@vp.VendorName.ToLower()" />
                                         </td>
+                                        <td class="vendor-name">
+                                            <img src="~/images/vaultguard.png" alt="Logo" class="vendor-logo-img d-md-none" data-vendor="@vp.VendorName.ToLower()" />
+                                            @vp.VendorName
+                                        </td>
+                                        <td>
+                                            <div class="username-container">
+                                                <span class="username-label">@(string.IsNullOrEmpty(vp.Username) ? "No username" : vp.Username)</span>
+                                                <div class="password-container">
+                                                    <input type="password" class="form-control d-inline-block" value="@EncryptionHelper.Decrypt(vp.CurrentPassword)" readonly style="width: auto;" />
+                                                    <i class="fa fa-eye ml-2" style="cursor: pointer;" onclick="togglePasswordVisibility(this)"></i>
+                                                    <i class="fa fa-copy ml-2" style="cursor: pointer;" onclick="copyToClipboard('@EncryptionHelper.Decrypt(vp.CurrentPassword)')"></i>
+                                                    <a href="@vp.Url" target="_blank" class="ml-2" title="Visit website">
+                                                        <i class="fa fa-globe" style="cursor: pointer;"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+
                                         <td class="vendor-category">@vp.Category</td>
                                         <td>
-                                            <!-- History button: calls AJAX to get full history -->
                                             <button class="btn btn-info btn-sm" onclick="openModal('@vp.VendorName')">History</button>
-                                            <!-- Delete button: calls AJAX to delete the password entry -->
                                             <button class="btn btn-danger btn-sm" onclick="confirmDelete(@vp.Id)">Delete</button>
                                         </td>
                                     </tr>
@@ -279,7 +297,7 @@
         const formData = new FormData(event.target);
         const jsonData = {};
         // Only include keys that belong to VendorPassword
-        const validKeys = ["VendorName", "Url", "Category", "CurrentPassword"];
+        const validKeys = ["VendorName", "Username", "Url", "Category", "CurrentPassword"];
         formData.forEach((value, key) => {
             if (validKeys.includes(key)) {
                 jsonData[key] = value;
@@ -478,4 +496,28 @@
             }
         }
     }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const defaultLogo = '/images/vaultguard.png';
+        const logoElements = document.querySelectorAll('.vendor-logo-img');
+
+        logoElements.forEach(img => {
+            const vendorName = img.getAttribute('data-vendor');
+            const logoUrl = `https://logo.clearbit.com/${vendorName}.com`;
+
+            fetch(logoUrl)
+                .then(response => {
+                    if (response.ok) {
+                        img.src = logoUrl;
+                    } else {
+                        img.src = defaultLogo;
+                    }
+                })
+                .catch(() => {
+                    img.src = defaultLogo;
+                });
+        });
+    });
 </script>

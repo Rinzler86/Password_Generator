@@ -49,6 +49,7 @@ namespace Password_Generator.Models
         [JsonConverter(typeof(JsonStringEnumConverter))]
         [Required]
         public PasswordCategory Category { get; set; }
+        public string Username { get; set; }
     }
 }
 

@@ -142,16 +142,18 @@ namespace Password_Generator.Controllers
                 CreatedAt = TimeZoneInfo.ConvertTimeFromUtc(ph.CreatedAt, estZone)
             }).ToList();
 
-            // Include the category in the response
+            // Include the category and username in the response
             var response = new
             {
                 success = true,
                 category = vendor.Category,
+                username = vendor.Username, // Include the username in the response
                 history = historyDTOs
             };
 
             return Json(response);
         }
+
 
         [HttpPost("AddPassword")]
         public IActionResult AddPassword([FromBody] VendorPassword model)
@@ -195,6 +197,7 @@ namespace Password_Generator.Controllers
                     existingVendor.CurrentPassword = EncryptionHelper.Encrypt(model.CurrentPassword);
                 existingVendor.Url = model.Url;
                 existingVendor.Category = model.Category;
+                existingVendor.Username = model.Username; // Update the username
                 _context.VendorPasswords.Update(existingVendor);
             }
             else
@@ -219,12 +222,14 @@ namespace Password_Generator.Controllers
                     vp.Id,
                     vp.VendorName,
                     CurrentPassword = EncryptionHelper.Decrypt(vp.CurrentPassword),
-                    vp.Category
+                    vp.Category,
+                    vp.Username // Include the username in the response
                 })
                 .ToList();
 
             return Json(new { success = true, message = "Password entry added.", passwords = updatedPasswords });
         }
+
 
         private string CapitalizeWords(string input)
         {

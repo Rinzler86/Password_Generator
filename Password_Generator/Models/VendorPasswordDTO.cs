@@ -7,6 +7,8 @@
         public string CurrentPassword { get; set; }
         public DateTime DateCreated { get; set; }
         public PasswordCategory Category { get; set; } // New property for category
+        public string Username { get; set; }
+        public string Url { get; set; }
     }
 }
 

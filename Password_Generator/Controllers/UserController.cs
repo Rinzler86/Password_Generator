@@ -46,7 +46,9 @@ namespace Password_Generator.Controllers
                     DateCreated = vp.PasswordHistories.Any()
                         ? vp.PasswordHistories.OrderByDescending(ph => ph.CreatedAt).FirstOrDefault().CreatedAt
                         : vp.CreatedAt,
-                    Category = vp.Category // Include the category in the DTO
+                    Category = vp.Category,
+                    Username = vp.Username,
+                    Url = vp.Url
                 })
                 .ToList();
 

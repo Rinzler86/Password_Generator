@@ -35,34 +35,25 @@ body, div, h2 {
 @media (max-width: 767.98px) {
     .password-container {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
     }
 
-        .password-container .mobile-actions {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
+    .password-container input {
+        margin-bottom: 5px;
+        width: 100% !important;
+    }
 
-            .password-container .mobile-actions .vendor-category {
-                margin-bottom: 5px;
-                flex: 1 1 100%;
-            }
-
+    .password-container i {
+        margin-right: 15px;
+        margin-left: 0;
+        margin-top: 5px;
+    }
     .vendor-category, .actions {
         display: none;
     }
 
-    .password-container .mobile-actions .btn {
-        margin-bottom: 5px;
-        flex: 1 1 auto;
-    }
-
-    /* Hide the category and action headers */
-    th:nth-child(3), th:nth-child(4) {
-        display: none;
-    }
 }
 @media (max-width: 767.98px) {
     #length-label, #numDigits-label {
@@ -88,3 +79,39 @@ body, div, h2 {
     animation-delay: 20s;
 }
 
+.vendor-logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+.vendor-logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .vendor-logo-header {
+        display: none;
+    }
+
+    .vendor-logo {
+        display: none;
+    }
+
+    .vendor-name {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .vendor-name img {
+            margin-bottom: 10px;
+        }
+}
+
+/* Ensure the privacy dots (password input) are black and larger */
+input[type="password"] {
+    color: black;
+    font-size: 1.1rem; /* Adjust the size as needed */
+}
