@@ -1,0 +1,6 @@
+﻿services:
+  - type: web
+    name: password-generator
+    env: docker
+    plan: free
+    autoDeploy: true
